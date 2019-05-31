@@ -17,8 +17,8 @@
 ソースの取得
 
 ```bash
-git clone https://github.com/ippei8jp/remark_editon
-cd remark_edeitor
+git clone https://github.com/ippei8jp/remark-editor.git
+cd remark-editor
 ```
 
 必要なモジュールのインストール
