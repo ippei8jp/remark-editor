@@ -1,0 +1,13 @@
+{
+  "name": "remark-ed",
+  "version": "0.0.0",
+  "description": "",
+  "private": true,
+  "main": "main.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ace-min-noconflict": "^1.1.9"
+  }
+}

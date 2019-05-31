@@ -1,0 +1,27 @@
+{
+  "name": "remark-editor",
+  "version": "0.0.0",
+  "description": "",
+  "private": true,
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron src",
+    "build": "node el_build.js",
+    "postinstall": "npm run install:src&& npm run install:photon&& npm run install:remark",
+    "install:src": "cd src&& npm install",
+    "install:photon": "node install_photon.js",
+    "install:remark": "node install_remark.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^5.0.1",
+    "electron-builder": "^20.40.2"
+  },
+  "dependencies": {
+    "download": "^7.1.0",
+    "unzip": "^0.1.11"
+  }
+}

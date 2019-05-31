@@ -1,0 +1,10 @@
+npm-debug.log
+.DS_Store
+.*.swp
+node_modules/
+package-lock.json
+dist/
+download/*
+src/photon/
+src/remark/
+.vscode
