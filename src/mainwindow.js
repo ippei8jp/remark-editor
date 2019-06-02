@@ -168,3 +168,27 @@ zoomOutBtn.onclick = function() {
     let next = ZoomPreset.search(zoomFactor).decrement;
     changeZoomLevel(next);                              // 新しいZoomパラメータを設定
 }
+
+// =================================================
+// ページ移動関連処理
+// ページ移動関連ボタン
+const goFirstBtn = document.getElementById('webview-go-first');
+const goPrevBtn  = document.getElementById('webview-go-prev');
+const goNextBtn  = document.getElementById('webview-go-next');
+const goLastBtn  = document.getElementById('webview-go-last');
+
+goFirstBtn.onclick = function() {
+    webview.send('go-firstslide');
+}
+
+goPrevBtn.onclick = function() {
+    webview.send('go-prevslide');
+}
+
+goNextBtn.onclick = function() {
+    webview.send('go-nextslide');
+}
+
+goLastBtn.onclick = function() {
+    webview.send('go-lastslide');
+}
