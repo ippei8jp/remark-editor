@@ -7,12 +7,69 @@
 </head>
 <body>
   <div class="window">
-    <div class="pane-group">
-      <div id="editor" class="pane"></div>
-      <!-- テスト とりあえずどっか開いてみよう
-      <webview id="webview" src="http://google.co.jp"></webview>
-      -->
-      <webview id="webview" class="pane" src="slideview.html" preload="webview.js"></webview>
+    <header class="toolbar toolbar-header">
+      <h1 class="title">Remark Editor</h1>
+      <div class="toolbar-actions">
+        <div class="btn-group">
+          <!-- 機能なし -->
+          <button class="btn btn-default">
+            <span class="icon icon-home"></span>
+          </button>
+          <!-- 機能なし -->
+          <button class="btn btn-default">
+            <span class="icon icon-folder"></span>
+          </button>
+          <!-- 機能なし -->
+          <button class="btn btn-default active">
+            <span class="icon icon-cloud"></span>
+          </button>
+          <!-- 機能なし -->
+          <button class="btn btn-default">
+            <span class="icon icon-popup"></span>
+          </button>
+          <!-- 機能なし -->
+          <button class="btn btn-default">
+            <span class="icon icon-shuffle"></span>
+          </button>
+        </div>
+        <!-- デバッグボタングループ -->
+        <div class="btn-group  pull-right">
+          <!-- webviewのデバッガON/OFFボタン -->
+          <button id="webview-debug" class="btn btn-default" title="webviewのデバッガON/OFF">
+            <span class="icon icon-github"></span>
+          </button>
+        </div>
+        <!-- ズームボタングループ -->
+        <!-- 
+            remarkは自分でスケール変更しちゃうのでズームしても意味ないんだけど... 
+            とりあえずズームのひな形ということで。
+        -->
+        <div class="btn-group  pull-right">
+          <!-- ズームアウトボタン -->
+          <button id="webview-zoomout" class="btn btn-default" title="ズームアウト">
+            <span class="icon icon-minus"></span>
+          </button>
+          <!-- ズームリセットボタン -->
+          <button id="webview-zoomreset" class="btn btn-default" title="ズームリセット">
+            0
+          </button>
+          <!-- ズームインボタン -->
+          <button id="webview-zoomin" class="btn btn-default" title="ズームイン">
+            <span class="icon icon-plus"></span>
+          </button>
+        </div>
+      </div>
+    </header>
+    <div class="window-content">
+      <div class="pane-group">
+        <div id="editor" class="pane"></div>
+        <!-- テスト とりあえずどっか開いてみよう
+        <webview id="webview" src="http://google.co.jp"></webview>
+        -->
+        <webview id="webview" class="pane" src="slideview.html" preload="webview.js"></webview>
+        <!--
+        -->
+      </div>
     </div>
   </div>
   <script type="text/javascript" src="mainwindow.js"></script>

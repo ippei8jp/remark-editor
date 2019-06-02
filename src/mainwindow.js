@@ -33,3 +33,138 @@ webview.addEventListener('leave-html-full-screen', () => {
   editorPane.removeAttribute('style');
 });
 
+
+
+// webviewのデバッグウィンドウの制御
+document.getElementById('webview-debug').onclick = function() {
+    if (webview.isDevToolsOpened()) {
+        webview.closeDevTools();
+    }
+    else {
+        webview.openDevTools();
+    }
+};
+
+
+
+// =================================================
+// ZOOM関連処理
+
+// Zoom関連ボタン
+const zoomRstBtn = document.getElementById('webview-zoomreset');
+const zoomInBtn  = document.getElementById('webview-zoomin');
+const zoomOutBtn = document.getElementById('webview-zoomout');
+
+// Zoomテーブル
+var ZoomPreset = [0.25, 0.33, 0.5, 0.67, 0.75, 0.9, 1, 1.1, 1.25, 1.5, 1.75, 2, 2.5, 3, 4, 5];
+
+// 次のズーム位置の探索
+ZoomPreset.search  = (value) => {
+    var left = 0;                                       // 左端のindex
+    var right = ZoomPreset.length - 1;                  // 右端のindex   ここは this.length - 1 じゃダメ(以下同文)
+
+    if (value <= ZoomPreset[left]) {
+        // 左端と一致 or 小さい
+        return {decrement: ZoomPreset[left], increment: ZoomPreset[left + 1]};
+    }
+    if (value >= ZoomPreset[right]) {
+        // 右端と一致 or 大きい
+        return {decrement: ZoomPreset[right - 1], increment: ZoomPreset[right]};
+    }
+
+    while ((right - left) > 1) {
+        // right と left は隣り合っていない
+        let mid = Math.floor((right + left) / 2);       // 中央のindex
+        if (value > ZoomPreset[mid]) {
+            // 中央値より大きい
+            left = mid;                 // 左側を捨てる
+        } else if (value < ZoomPreset[mid]) {
+            // 中央値より小さい
+            right = mid;                // 右側を捨てる
+        } else {
+            // 中央値と一致
+            return {decrement: ZoomPreset[mid - 1], increment: ZoomPreset[mid + 1]};
+        }
+    }
+    // right と left は隣り合っている
+    return {decrement: ZoomPreset[left], increment: ZoomPreset[right]};
+}
+
+// ボタンのステータス変更
+function changeButtonState(btn, flag) {
+    if (flag) {
+        // 有効
+        btn.disabled = false;                   // ボタンを有効に
+        btn.classList.remove('active');         // 無効のときactive class を追加するのでここでは削除
+    }
+    else {
+        // 無効
+        btn.disabled = true;                    // ボタンを無効に
+        btn.classList.add('active');            // 無効のときactive class を追加するので
+    }
+}
+
+
+// Zoomパラメータを変更
+function changeZoomLevel(newZoom) {
+    let min = ZoomPreset[0];
+    let max = ZoomPreset[ZoomPreset.length - 1]
+
+    // 最大/最小制限
+    if (newZoom < min)      newZoom = min;
+    if (newZoom > max)      newZoom = max;
+
+    // 新しいZoomパラメータを設定
+    webview.setZoomFactor(newZoom);
+
+    // 新しいZoomパラメータを表示
+    zoomRstBtn.innerText = Math.round(newZoom * 100) + '%';
+
+    // ボタンステータスの変更
+    if (newZoom <= min) {
+        // 最小値に達した
+        changeButtonState(zoomOutBtn, false);       // ズームアウトボタンを無効に
+    }
+    else {
+        changeButtonState(zoomOutBtn, true);        // ズームアウトボタンを有効に
+    }
+    if (newZoom >= max) {
+        // 最大値に達した
+        changeButtonState(zoomInBtn, false);        // ズームインボタンを無効に
+    }
+    else {
+        changeButtonState(zoomInBtn, true);         // ズームインボタンを有効に
+    }
+}
+
+// Zoomパラメータの初期化
+function resetZoomFactor()
+{
+    // Zoomパラメータを1に
+    changeZoomLevel(1.0);
+}
+
+// webviewのDOM初期化完了イベントハンドラ
+webview.addEventListener('dom-ready', function() {
+    // Zoomパラメータ初期化
+    resetZoomFactor();
+});
+
+// ズームリセットボタン
+zoomRstBtn.onclick = resetZoomFactor;
+
+// ズームインボタン
+zoomInBtn.onclick = function() {
+    let zoomFactor = webview.getZoomFactor();           // 現在のZoomパラメータ
+    zoomFactor = Math.round(zoomFactor * 100) / 100;    // 小数2桁に四捨五入
+    let next = ZoomPreset.search(zoomFactor).increment;
+    changeZoomLevel(next);                              // 新しいZoomパラメータを設定
+}
+
+// ズームアウトボタン
+zoomOutBtn.onclick = function() {
+    let zoomFactor = webview.getZoomFactor();           // 現在のZoomパラメータ
+    zoomFactor = Math.round(zoomFactor * 100) / 100;    // 小数2桁に四捨五入
+    let next = ZoomPreset.search(zoomFactor).decrement;
+    changeZoomLevel(next);                              // 新しいZoomパラメータを設定
+}
