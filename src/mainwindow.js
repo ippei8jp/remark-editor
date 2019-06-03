@@ -1,3 +1,9 @@
+// for FileSystem accsess
+const fs = require('fs');
+
+// for electron accsess
+const { dialog } = require('electron').remote;
+
 // Initialize Editor
 require('ace-min-noconflict');
 require('ace-min-noconflict/mode-markdown');
@@ -7,8 +13,10 @@ editor.getSession().setMode("ace/mode/markdown");
 editor.getSession().setUseWrapMode(true);
 editor.focus();
 
-// for Guest Debug
+// webviewタグ アクセス用
 var webview = document.getElementById('webview');
+
+// for Guest Debug
 if (process.env.DEBUG_GUEST) {
   webview.addEventListener('dom-ready', () => {
     webview.openDevTools()
@@ -33,8 +41,62 @@ webview.addEventListener('leave-html-full-screen', () => {
   editorPane.removeAttribute('style');
 });
 
+// =================================================
+// ファイル関連処理
 
+// ファイル関連ボタン
+const fileOpenBtn = document.getElementById('file-open');
+const fileSaveBtn  = document.getElementById('file-save');
 
+// ファイルオープンボタン
+fileOpenBtn.onclick = function() {
+    dialog.showOpenDialog( { properties: ['openFile'],
+                             filters: [ { name: 'Markdown files', extensions: ['md', 'txt'] },
+                                        { name: 'All files',      extensions: ['*']         } ]
+                           }, (filenames) => {
+                                if (filenames) {
+                                    readFile(filenames[0]);
+                                }
+                           });
+}
+
+// ファイルセーブボタン
+fileSaveBtn.onclick = function() {
+    dialog.showSaveDialog( { properties: ['openFile'],
+                             filters: [ { name: 'Markdown files', extensions: ['md', 'txt'] },
+                                        { name: 'All files',      extensions: ['*']         } ]
+                           }, (fileName) => {
+                                if (fileName) {
+                                    const data = editor.getValue();
+                                    console.log(data);
+                                    writeFile(fileName, data);
+                                }
+                           } );
+}
+
+// ファイル読み込み処理本体
+function readFile(path) {
+    fs.readFile(path, (error, text) => {
+        if (error != null) {
+            alert('read error : ' + error);
+            return;
+        }
+        //alert(text.toString().length);
+        editor.setValue(text.toString(), -1);
+    });
+}
+
+// ファイル保存処理本体
+function writeFile(path, data) {
+    fs.writeFile(path, data, (error) => {
+        if (error != null) {
+            alert("save error.");
+            return;
+        }
+    });
+}
+
+// =================================================
 // webviewのデバッグウィンドウの制御
 document.getElementById('webview-debug').onclick = function() {
     if (webview.isDevToolsOpened()) {
@@ -44,8 +106,6 @@ document.getElementById('webview-debug').onclick = function() {
         webview.openDevTools();
     }
 };
-
-
 
 // =================================================
 // ZOOM関連処理
