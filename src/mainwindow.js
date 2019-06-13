@@ -155,12 +155,14 @@ function changeButtonState(btn, flag) {
     if (flag) {
         // 有効
         btn.disabled = false;                   // ボタンを有効に
-        btn.classList.remove('active');         // 無効のときactive class を追加するのでここでは削除
+        // photon-kitの場合はactiveクラスで無効表示
+        // btn.classList.remove('active');         // 無効のときactive class を追加するのでここでは削除
     }
     else {
         // 無効
         btn.disabled = true;                    // ボタンを無効に
-        btn.classList.add('active');            // 無効のときactive class を追加するので
+        // photon-kitの場合はactiveクラスで無効表示
+        // btn.classList.add('active');            // 無効のときactive class を追加するので
     }
 }
 
